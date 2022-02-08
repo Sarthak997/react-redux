@@ -67,9 +67,9 @@ function Table({ columns, data, checkbox, customEndCol }) {
     data.slice(0, 10)
   );
 
-  // React.useEffect(() => {
-  //   setRows(data);
-  // }, [data]);
+  React.useEffect(() => {
+    setRows(data);
+  }, [data]);
 
   const gotoPage = (pageNo) => {
     setCurrentPage(Number(pageNo));
@@ -329,7 +329,7 @@ function Table({ columns, data, checkbox, customEndCol }) {
 
   const renderTableData = () => {
     console.log(columnsByName, columnsWithSorting, "state in table");
-    const sortedData = sortDataInOrder(data, columnsWithSorting);
+    const sortedData = sortDataInOrder(rows, columnsWithSorting);
     const newData = sortedData.map((row, idx) => {
       return {
         id: idx,
