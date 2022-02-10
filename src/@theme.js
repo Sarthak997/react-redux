@@ -31,7 +31,7 @@ const GlobalStyle = createGlobalStyle`
   body {
     padding: 0;
     margin: 0;
-    font-family: "sans-serif;
+    font-family:sans-serif;
     font-weight: normal;
     font-size: 16px;
     -webkit-font-smoothing: antialiased;
