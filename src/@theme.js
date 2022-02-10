@@ -4,7 +4,7 @@ const theme = {
   colors: {
     default: {
       primary: "#f5f6fa",
-      primaryDark: "#011f30",
+      primaryDark: "#5851d3",
       black: "#000000",
       lightBlack: "#888",
       fadedBlack: "#757575",

@@ -1,32 +1,10 @@
 var webpack = require("webpack");
 var path = require("path");
-// const dotenv = require("dotenv");
-
-// const env = dotenv.config().parsed;
 
 // variables
 var isProduction = process.argv.indexOf("production") >= 0;
 var sourcePath = path.join(__dirname, "./src");
 var outPath = path.join(__dirname, "./dist");
-
-// API Host name
-// const API_HOST_NAME = isProduction
-//   ? env.API_URL_PRODUCTION
-//   : env.API_URL_DEVELOPMENT;
-
-// console.log(API_HOST_NAME);
-// env
-// const envKeys = {
-//   "process.env.API_HOST_NAME": `'${API_HOST_NAME}'`,
-//   "process.env.NODE_ENV": isProduction ? "'production'" : "'development'",
-//   "process.env.USER_POOL_ID": `'${env.USER_POOL_ID}'`,
-//   "process.env.CLIENT_ID": `'${env.CLIENT_ID}'`,
-//   "process.env.IDENTITY_POOL_ID": `'${env.IDENTITY_POOL_ID}'`,
-//   "process.env.AWS_REGION": `'${env.AWS_REGION}'`,
-//   "process.env.MIXPANEL": `'${env.MIXPANEL}'`,
-// };
-
-// console.log('envKeys: ', envKeys);
 
 // plugins
 var HtmlWebpackPlugin = require("html-webpack-plugin");
@@ -42,12 +20,15 @@ const config = {
     path: outPath,
     filename: "bundle.js",
     // chunkFilename: "[chunkhash].js",
-    // publicPath: "/",
+    publicPath: "/",
   },
   target: "web",
   resolve: {
     extensions: [".js", ".jsx", ".css", ".scss"],
     modules: ["node_modules", "./src"],
+    fallback: {
+      fs: false,
+    },
     // Fix webpack's default behavior to not load packages with jsnext:main module
     // (jsnext:main directs not usually distributable es6 format, but es6 sources)
     mainFields: ["module", "browser", "main"],
@@ -79,25 +60,10 @@ const config = {
         test: /\.(jpe?g|gif|bmp|mp3|mp4|ogg|wav|eot|ttf|woff|woff2|otf)$/,
         use: "file-loader",
       },
+      { test: /\.svg/, type: "asset/inline" },
     ],
   },
-  //   optimization: {
-  //     splitChunks: {
-  //       name: true,
-  //       cacheGroups: {
-  //         commons: {
-  //           chunks: "initial",
-  //           minChunks: 2,
-  //         },
-  //         vendors: {
-  //           test: /[\\/]node_modules[\\/]/,
-  //           chunks: "all",
-  //           priority: -10,
-  //         },
-  //       },
-  //     },
-  //     runtimeChunk: true,
-  //   },
+
   plugins: [
     new webpack.DefinePlugin({
       "process.env.NODE_ENV": isProduction
@@ -119,24 +85,16 @@ const config = {
   ],
   devServer: {
     static: "./dist",
-    // publicPath: "/",
-    // contentBase: isProduction ? outPath : sourcePath,
-    // hot: isProduction ? false : true,
-    // inline: true,
-    // historyApiFallback: true,
-    // stats: isProduction ? "none" : "minimal",
-    // clientLogLevel: isProduction ? "none" : "warning",
-    // overlay: isProduction ? false : true,
-    // disableHostCheck: true,
+    historyApiFallback: true,
+  },
+  externals: {
+    // global app config object
+    config: JSON.stringify({
+      apiUrl: "http://localhost:8080",
+    }),
   },
   // https://webpack.js.org/configuration/devtool/
   devtool: isProduction ? "hidden-source-map" : "eval",
-  //   node: {
-  //     // workaround for webpack-dev-server issue
-  //     // https://github.com/webpack/webpack-dev-server/issues/60#issuecomment-103411179
-  //     fs: "empty",
-  //     net: "empty",
-  //   },
 };
 
 module.exports = config;

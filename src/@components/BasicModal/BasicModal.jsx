@@ -22,10 +22,9 @@ const Background = styled.div`
 `;
 
 const ButtonsWrapper = styled.div`
-  left: 10px;
-  bottom: 15px;
   display: flex;
   flex-direction: row;
+  justify-content: flex-end;
 `;
 
 const SubmitBtn = styled.button`
@@ -33,12 +32,10 @@ const SubmitBtn = styled.button`
   margin: 10px;
   height: 35px;
   font-size: 11px;
-  background-color: ${({ theme }) => theme.colors.default.alert};
-  border: 1px solid ${({ theme }) => theme.colors.default.alert};
-
-  :hover {
-    background-color: ${({ theme }) => theme.colors.default.alertDark};
-  }
+  color: ${({ theme }) => theme.colors.default.white};
+  background-color: ${({ theme }) => theme.colors.default.primaryDark};
+  border: 1px solid ${({ theme }) => theme.colors.default.primaryDark};
+  cursor: pointer;
 `;
 
 const CancelBtn = styled.button`
@@ -46,6 +43,7 @@ const CancelBtn = styled.button`
   margin: 10px;
   height: 35px;
   font-size: 11px;
+  color: ${({ theme }) => theme.colors.default.white};
   background-color: ${({ theme }) => theme.colors.default.darkGray};
   border: 1px solid ${({ theme }) => theme.colors.default.darkGray};
 
@@ -55,16 +53,13 @@ const CancelBtn = styled.button`
 `;
 const Wrapper = styled.form`
   position: fixed;
-  top: 32%;
-  left: 40%;
+  top: 50%;
+  left: 50%;
   transform: translate(-50%, -50%);
-  // font-family: 'Apercu_Medium';
   font-size: 18px;
-  //   min-height: 60vh;
   display: flex;
-  max-height: 30vh;
-  // overflow: auto;
-  // width: 390px;
+  // max-height: 30vh;
+  width: 30vw;
   padding: 30px;
   flex-direction: column;
   background-color: white;
@@ -80,7 +75,12 @@ const Hr = styled.hr`
 
 const MainHeading = styled.div`
   font-size: 18px;
-  //   color: ${({ theme }) => theme.colors.default.primary};
+`;
+
+const Input = styled.input`
+  width: 100%;
+  height: 35px;
+  border: 0.5px solid ${({ theme }) => theme.colors.default.gray};
 `;
 
 const BasicModal = (props) => {
@@ -106,26 +106,26 @@ const BasicModal = (props) => {
         <MainHeading>Add Members</MainHeading>
         <Hr />
         <label>
-          Name
-          <input onChange={(e) => setName(e.target.value)} value={name} />
+          <div>Name</div>
+          <Input onChange={(e) => setName(e.target.value)} value={name} />
         </label>
         <label>
-          status
-          <input onChange={(e) => setStatus(e.target.value)} value={status} />
+          <div> status</div>
+          <Input onChange={(e) => setStatus(e.target.value)} value={status} />
         </label>
         <label>
-          Company
-          <input onChange={(e) => setCompany(e.target.value)} value={company} />
+          <div> Company</div>
+          <Input onChange={(e) => setCompany(e.target.value)} value={company} />
         </label>
         <label>
-          Notes
-          <input onChange={(e) => setNotes(e.target.value)} value={notes} />
+          <div> Notes</div>
+          <Input onChange={(e) => setNotes(e.target.value)} value={notes} />
         </label>
         <div style={{ marginTop: "2em" }}>
           <ButtonsWrapper>
-            <SubmitBtn>Yes, Delete </SubmitBtn>
+            <SubmitBtn>Save </SubmitBtn>
             <CancelBtn type="button" noHover onClick={onCancel}>
-              No, Don't delete
+              Cancel
             </CancelBtn>
           </ButtonsWrapper>
         </div>

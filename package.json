@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "serve": "webpack serve --mode development",
+    "serve": "webpack serve  --mode development",
     "build": "webpack --mode production"
   },
   "repository": {
@@ -18,10 +18,13 @@
   },
   "homepage": "https://github.com/Sarthak997/react-redux#readme",
   "dependencies": {
+    "history": "^4.10.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-redux": "^7.2.6",
+    "react-router-dom": "^5.3.0",
     "redux": "^4.1.2",
+    "redux-thunk": "^2.4.1",
     "styled-components": "^5.3.3"
   },
   "devDependencies": {

@@ -11,15 +11,12 @@ export const addNewPlayer = (player) => ({
     notes: player.notes,
   },
 });
-export const deletePlayer = (uuid) => (
-  console.log(uuid, "uuid"),
-  {
-    type: PLAYER_DELETED,
-    payload: {
-      uuid: uuid,
-    },
-  }
-);
+export const deletePlayer = (uuid) => ({
+  type: PLAYER_DELETED,
+  payload: {
+    uuid: uuid,
+  },
+});
 
 const actions = {
   addNewPlayer,

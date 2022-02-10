@@ -1,22 +1,37 @@
 import React from "react";
+import styled from "styled-components";
+const DropdownButtonWrapper = styled.button`
+  color: ${({ isOpen }) => (isOpen ? "#cccccc" : "inherit")};
+  // position: relative;
+  border: 1px solid #cccccc;
+  border-radius: 3px;
+  width: var(--width-list);
+  font-size: 12px;
+  height: 30px;
+  text-align: left;
+  padding-left: 5px;
+  cursor: pointer;
+  font-family: inherit;
+`;
 
-function debounce(fn, delay) {
-  let timer;
-  const thisContext = this;
-  const args = arguments;
-  return function (...args) {
-    clearTimeout(timer);
-    timer = setTimeout(() => {
-      return fn.apply(thisContext, args);
-    }, delay);
-  };
-}
+const Wrapper = styled.div`
+  font-size: 12px;
+  width: 135px;
+  position: relative;
+  z-index: 1;
+`;
+
+const ListWrapper = styled.div`
+  border: 1px solid #cccccc;
+  max-width: var(--width-list);
+  width: 100%;
+  background: white;
+  position: absolute;
+`;
 
 const DropDownListItem = (props) => {
-  console.log(props, "proposhjhh ");
   const toggleChangeListItem = () => {
     const { listData, uniqueKey } = props;
-    console.log(listData, uniqueKey, "all keys");
     props.toggleChangeListItem(listData[uniqueKey]);
   };
   const onKeyUp = (e) => {
@@ -25,9 +40,7 @@ const DropDownListItem = (props) => {
       props.toggleChangeListItem(listData[uniqueKey]);
     }
   };
-  const debouncedToggleChangeListItem = () => {
-    return debounce(toggleChangeListItem, 100);
-  };
+
   const { listData, isChecked } = props;
   const id = `${listData.label}__${listData.value}`;
   return (
@@ -54,19 +67,6 @@ export default function NewDropDown(props) {
   const toggleIsOpen = () => {
     setIsOpen(!isOpen);
   };
-  // handle click outside ~ to close the dropdown
-  // componentWillMount() {
-  document.addEventListener("mousedown", handleDocClick, false);
-  // }
-  // componentWillUnmount() {
-  //   document.removeEventListener("mousedown", handleDocClick, false);
-  // }
-  const handleDocClick = (e) => {
-    console.log("mouse down", wrapper);
-    if (!wrapper.contains(e.target)) {
-      setIsOpen(false);
-    }
-  };
   const renderDropDownIcon = () => {
     if (props.customRenderDropDownIcon) {
       return props.customRenderDropDownIcon();
@@ -89,13 +89,14 @@ export default function NewDropDown(props) {
     }
     const activeClass = isOpen ? "new-drop-down--is-open" : "";
     return (
-      <button
+      <DropdownButtonWrapper
         className={`new-drop-down__button ${activeClass}`}
+        isOpen={isOpen}
         onClick={toggleIsOpen}
       >
         <span>{labelContent}</span>
         {renderDropDownIcon()}
-      </button>
+      </DropdownButtonWrapper>
     );
   };
   const renderDropDownList = () => {
@@ -129,7 +130,7 @@ export default function NewDropDown(props) {
 
     return data_.map((listData, index) => {
       const isChecked = getIsChecked({ listData, uniqueKey, selected });
-      console.log(listData, uniqueKey, isChecked, "list data");
+
       return (
         <DropDownListItem
           key={index}
@@ -142,13 +143,13 @@ export default function NewDropDown(props) {
     });
   };
   return (
-    <div className="new-drop-down" ref={(wrapper) => (wrapper = wrapper)}>
+    <Wrapper className="new-drop-down" ref={(wrapper) => (wrapper = wrapper)}>
       {renderSelected()}
       {isOpen && (
-        <div className="new-drop-down__list-wrapper">
+        <ListWrapper className="new-drop-down__list-wrapper">
           {renderDropDownList()}
-        </div>
+        </ListWrapper>
       )}
-    </div>
+    </Wrapper>
   );
 }

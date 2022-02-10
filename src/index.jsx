@@ -5,6 +5,9 @@ import { AppShell } from "@screens";
 import { Provider } from "react-redux";
 import store from "@store";
 
+import { configureFakeBackend } from "@helpers";
+configureFakeBackend();
+
 export function App() {
   return (
     <ThemeProvider theme={theme}>

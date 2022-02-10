@@ -36,7 +36,6 @@ const reducer = (state = initialState, action) => {
   }
 
   if (action.type === PLAYER_DELETED) {
-    console.log(action.payload.uuid, "payload delete");
     return state.filter((player) => {
       return player.uuid !== action.payload.uuid;
     });

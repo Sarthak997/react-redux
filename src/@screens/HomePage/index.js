@@ -1,5 +1,5 @@
 import Container from "./Container";
-import LoginPage from "./Login";
+import HomePage from "./HomePage";
 
-export { LoginPage };
+export { HomePage };
 export default Container;

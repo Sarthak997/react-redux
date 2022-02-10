@@ -23,6 +23,11 @@ const Styles = styled.div`
       text-align: center;
       border-bottom: 1px solid #ccc;
     }
+    tr {
+      :nth-child(2n) {
+        background-color: white;
+      }
+    }
   }
   button {
     border: none;
@@ -47,54 +52,18 @@ const Td = styled.td`
   height: 79px;
   white-space: nowrap;
   word-wrap: break-word;
-  // overflow: hidden;
-  // text-overflow: ellipsis;
-  // text-align: left;
   text-align: ${({ align }) => (align === "right" ? align : "left")};
 `;
 
 function Table({ columns, data, checkbox, customEndCol }) {
-  console.log(data, "in deep data");
   const [checkBox, setCheckBox] = React.useState(false || checkbox);
   const [rows, setRows] = React.useState(data);
-  const [pageCount, setPageCount] = React.useState(1);
-  const [currentPage, setCurrentPage] = React.useState(1);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [selectAllRows, setSelectAllRows] = React.useState(false);
-  const [selectedRows, setSelectedRows] = React.useState([]);
   const [sortType, setSortType] = React.useState(1);
-  const [currentPageRows, setCurrentPageRows] = React.useState(
-    data.slice(0, 10)
-  );
 
   React.useEffect(() => {
     setRows(data);
   }, [data]);
-
-  const gotoPage = (pageNo) => {
-    setCurrentPage(Number(pageNo));
-  };
-  const previousPage = () => {
-    currentPage > 1 ? setCurrentPage(currentPage - 1) : null;
-  };
-  const nextPage = () => {
-    currentPage < pageCount ? setCurrentPage(currentPage + 1) : null;
-  };
-
-  // React.useEffect(() => {
-  //   calculateTotalPages();
-  // }, [rowsPerPage]);
-
-  const calculateTotalPages = () => {
-    const noPages = Math.ceil(rows.length / rowsPerPage);
-    setPageCount(noPages);
-    setCurrentPageRows(
-      rows.slice(
-        currentPage === 1 ? 0 : currentPage * rowsPerPage,
-        currentPage === 1 ? rowsPerPage : currentPage * rowsPerPage
-      )
-    );
-  };
 
   const renderTableHeader = () => (
     <tr>
@@ -111,7 +80,7 @@ function Table({ columns, data, checkbox, customEndCol }) {
           <th
             key={index}
             onClick={() => {
-              sortByColumn(label, sortType);
+              sortByColumn(name, sortType);
               setSortType(sortType === 1 ? 0 : 1);
             }}
           >
@@ -140,10 +109,6 @@ function Table({ columns, data, checkbox, customEndCol }) {
     const isCollapsed = null;
     const backgroundColor = "#ff319";
     const selectOption = true;
-    const collapsible = row.cells.filter(
-      (cell) => cell.field === "CollapsibleComponent"
-    );
-    // console.log("hererer", customEndCol(row));
     return (
       <React.Fragment key={idx}>
         <Tr
@@ -169,44 +134,11 @@ function Table({ columns, data, checkbox, customEndCol }) {
             </td>
           )}
 
-          {/* {collapsible.length > 0 && (
-            <td
-              style={{
-                width: "48px",
-                padding: "0px 0px 0px 10px",
-                textAlign: "center",
-              }}
-            >
-              <IconButton
-                            aria-label="expand row"
-                            size="small"
-                            onClick={() => {
-                              if (collapsibleStatus) {
-                                if (isCollapsed === null) collapsibleStatus(true);
-                                else collapsibleStatus(false);
-                              }
-
-                              setIsCollapsed(
-                                isCollapsed === null ? idx : isCollapsed === idx ? null : idx
-                              );
-                            }}
-                          >
-                            {isCollapsed === idx ? (
-                              ">"
-                            ) : (
-                              "<"
-                            )}
-                          </IconButton>
-            </td>
-          )} */}
-
-          {row.cells
-            .filter((cell) => cell.field !== "CollapsibleComponent")
-            .map((cell, idx) => (
-              <Td key={idx} align={columns[idx].align}>
-                {cell.render()}{" "}
-              </Td>
-            ))}
+          {row.cells.map((cell, idx) => (
+            <Td key={idx} align={columns[idx].align}>
+              {cell.render()}{" "}
+            </Td>
+          ))}
           {customEndCol && (
             <td
               style={{
@@ -219,56 +151,13 @@ function Table({ columns, data, checkbox, customEndCol }) {
             </td>
           )}
         </Tr>
-
-        {isCollapsed === idx && collapsible.length > 0 && (
-          <CollapsibleTR
-            className="collapsibleComponent"
-            key={idx}
-            uncollapsed={isCollapsed === idx}
-          >
-            <CollapsibleTD colSpan={columns.length + 1}>
-              {collapsible[0].render()}
-            </CollapsibleTD>
-          </CollapsibleTR>
-        )}
       </React.Fragment>
-      // <tr key={index}>
-      //   {checkBox && (
-      //     <th>
-      //       <input
-      //         defaultChecked={!!selectAllRows}
-      //         type="checkbox"
-      //         onChange={() => {
-      //           const res = [...selectedRows, row];
-      //           setSelectedRows(res);
-      //         }}
-      //       />
-      //     </th>
-      //   )}
-
-      //   {columns.map((col, index) => {
-      //     console.log(row[col.label], "inside table");
-      //     return (
-      //       <td key={index}>
-      //         {col.render
-      //           ? col.render({ value: row[col.label] })
-      //           : row[col.label]}
-      //       </td>
-      //     );
-      //   })}
-      // </tr>
     );
   };
 
   const sortByColumn = (columnName, order) => {
-    const sortedRows = rows
-      .sort(compare(columnName, order))
-      .slice(
-        currentPage === 1 ? 0 : currentPage * rowsPerPage,
-        currentPage === 1 ? rowsPerPage : currentPage * rowsPerPage
-      );
-
-    setCurrentPageRows(sortedRows);
+    const sortedRows = rows.sort(compare(columnName, order));
+    setRows(sortedRows);
   };
 
   const getColumnsByName = (columns) => {
@@ -322,13 +211,11 @@ function Table({ columns, data, checkbox, customEndCol }) {
         }
         newRow[column.name] = row[column.name];
       });
-      console.log(newRow, "newRoe");
       return newRow;
     });
   };
 
   const renderTableData = () => {
-    console.log(columnsByName, columnsWithSorting, "state in table");
     const sortedData = sortDataInOrder(rows, columnsWithSorting);
     const newData = sortedData.map((row, idx) => {
       return {
@@ -338,7 +225,6 @@ function Table({ columns, data, checkbox, customEndCol }) {
         original: row,
         cells: Object.entries(row)
           .map(([column, value]) => {
-            console.log(columnsByName[column], column, "coulumns");
             return {
               // hidden: columnsByName[column].hidden,
               field: column,
@@ -349,7 +235,6 @@ function Table({ columns, data, checkbox, customEndCol }) {
           .filter((cell) => !cell.hidden),
       };
     });
-    console.log(newData, "new data");
     return newData.map((row, index) => {
       return prepareRow(row, index);
     });
@@ -361,51 +246,12 @@ function Table({ columns, data, checkbox, customEndCol }) {
         <thead>{renderTableHeader()}</thead>
         <tbody>{renderTableData()}</tbody>
       </table>
-      <div className="pagination">
-        <button onClick={() => gotoPage(1)} disabled={!(currentPage < 1)}>
-          {"<<"}
-        </button>
-        <button onClick={() => previousPage()} disabled={!(currentPage < 1)}>
-          {"<"}
-        </button>
-        <button
-          onClick={() => nextPage()}
-          disabled={!(currentPage >= pageCount)}
-        >
-          {">"}
-        </button>
-        <button
-          onClick={() => gotoPage(pageCount)}
-          disabled={!(currentPage >= pageCount)}
-        >
-          {">>"}
-        </button>
-        <span>
-          Page
-          <strong>
-            {currentPage} of {pageCount}
-          </strong>
-        </span>
-        <select
-          value={rowsPerPage}
-          onChange={(e) => {
-            setRowsPerPage(Number(e.target.value));
-          }}
-        >
-          {[10, 20, 30, 40, 50].map((pageSize) => (
-            <option key={pageSize} value={pageSize}>
-              {pageSize}
-            </option>
-          ))}
-        </select>
-      </div>
     </>
   );
 }
 
 function TableWrapper({ columns, data, checkbox, customEndCol }) {
   const memoColumns = React.useMemo(() => columns, []);
-  console.log(data, "in table");
   return (
     <Styles>
       <Table

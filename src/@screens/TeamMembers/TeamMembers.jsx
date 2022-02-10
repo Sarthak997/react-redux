@@ -11,7 +11,27 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
 `;
+const Header = styled.div`
+  display: flex;
+  align-items: center;
+`;
 
+const AddMemberButton = styled.button`
+  background-color: ${({ theme }) => theme.colors.default.primaryDark};
+  color: ${({ theme }) => theme.colors.default.white};
+  border-radius: 2rem;
+  margin-left: 2rem;
+  height: 3rem;
+  cursor: pointer;
+`;
+
+const Hr = styled.hr`
+  width: 100%;
+  border: 0.5px solid ${({ theme }) => theme.colors.default.darkGray};
+`;
+const DeleteDiv = styled.div`
+  cursor: pointer;
+`;
 const TeamMembers = ({ data, addNewPlayer, deletePlayer }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [uniqueKey, setUniqueKey] = useState("value");
@@ -32,10 +52,8 @@ const TeamMembers = ({ data, addNewPlayer, deletePlayer }) => {
   ]);
   useEffect(() => {
     let filters = data.map((info, idx) => {
-      console.log(info.company, "heerererere");
       return info.company;
     });
-    console.log([...new Set(filters)]);
     setOptions(
       [...new Set(filters)].map((filter, idx) => {
         return { label: idx, value: filter };
@@ -44,7 +62,6 @@ const TeamMembers = ({ data, addNewPlayer, deletePlayer }) => {
     setSelected([...new Set(filters)]);
     getFilteredMembers(data);
   }, [data]);
-  console.log(data, "new here");
   let columns = [
     { name: "name", label: "Name" },
     { name: "company", label: "Company" },
@@ -76,20 +93,6 @@ const TeamMembers = ({ data, addNewPlayer, deletePlayer }) => {
     }
   };
 
-  const renderSelected = () => {
-    const options_ = options.slice();
-    let res = [];
-    for (let i = 0; i < selected.length; i++) {
-      for (let j = 0; j < options_.length; j++) {
-        if (options_[j][uniqueKey] === selected[i]) {
-          res.push(options_[j]);
-          options_.splice(j, 1);
-        }
-      }
-    }
-    return JSON.stringify(res);
-  };
-
   function handleAddMembers(name, status, company, notes) {
     let player = {
       name,
@@ -98,19 +101,13 @@ const TeamMembers = ({ data, addNewPlayer, deletePlayer }) => {
       notes,
       last_updated: new Date().toLocaleDateString(),
     };
-    console.log(player, addNewPlayer);
     addNewPlayer(player);
   }
 
   function getFilteredMembers(members) {
-    console.log(members, selected, "sab yahan");
-    // if (selected.length) {
     return members.filter(function (member) {
       return selected.indexOf(member.company) > -1;
     });
-    // } else {
-    //   return members;
-    // }
   }
 
   return (
@@ -122,7 +119,13 @@ const TeamMembers = ({ data, addNewPlayer, deletePlayer }) => {
         }}
         onSubmit={handleAddMembers}
       />
-      <h1>Team Members</h1>
+      <Header>
+        <h1>Team Members</h1>
+        <AddMemberButton onClick={() => setModalOpen(true)}>
+          Add Members +
+        </AddMemberButton>
+      </Header>
+      <Hr />
       <NewDropDown
         shouldHaveSelectAll={true}
         uniqueKey={uniqueKey}
@@ -130,18 +133,15 @@ const TeamMembers = ({ data, addNewPlayer, deletePlayer }) => {
         selected={selected}
         toggleChangeListItem={toggleChangeListItem}
       ></NewDropDown>
-      <div>
-        <h5>Selected:</h5>
-        {renderSelected()}
-      </div>
-      <button onClick={() => setModalOpen(true)}>Add Members</button>
       <TableWrapper
         columns={columns}
         data={getFilteredMembers(data)}
         checkbox={true}
         customEndCol={(row) => {
           return (
-            <div onClick={() => deletePlayer(row.original.uuid)}>delete</div>
+            <DeleteDiv onClick={() => deletePlayer(row.original.uuid)}>
+              <img src={require("@assets/delete.svg")} alt="" />
+            </DeleteDiv>
           );
         }}
       />
