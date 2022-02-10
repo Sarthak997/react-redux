@@ -31,7 +31,7 @@ const GlobalStyle = createGlobalStyle`
   body {
     padding: 0;
     margin: 0;
-    font-family: "Neurial_Regular","Neurial_Medium", "Neurial_Light",   "Roboto", "Source Sans Pro", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+    font-family: "sans-serif;
     font-weight: normal;
     font-size: 16px;
     -webkit-font-smoothing: antialiased;
@@ -53,10 +53,6 @@ const GlobalStyle = createGlobalStyle`
 
   #root{
     height:100%;
-  }
-
-  .mimic-div{
-    position:fixed;
   }
 `;
 
